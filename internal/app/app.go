@@ -2,24 +2,33 @@ package app
 
 import (
 	"github.com/ISSuh/msago-sample/internal/config"
+	"github.com/ISSuh/msago-sample/internal/controller/api/handler"
+	"github.com/ISSuh/msago-sample/internal/controller/api/middleware"
+	"github.com/ISSuh/msago-sample/internal/controller/api/router"
+	"github.com/ISSuh/msago-sample/internal/logger"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type Application struct {
 	config config.Config
+	log    logger.Logger
+
+	h handler.Handler
+	m middleware.Middleware
+	r router.Router
 
 	echo *echo.Echo
 }
 
-func NewApplication(path string) (*Application, error) {
-	config, err := config.NewConfig(path)
+func NewApplication(l logger.Logger, configPath string) (*Application, error) {
+	config, err := config.NewConfig(configPath)
 	if err != nil {
 		return nil, err
 	}
 
 	a := &Application{
 		config: config,
+		log:    l,
 		echo:   echo.New(),
 	}
 
@@ -28,14 +37,30 @@ func NewApplication(path string) (*Application, error) {
 	return a, nil
 }
 
-func (a *Application) Start() {
+func (a *Application) Init() error {
+	var err error
+
+	if err = a.initRepository(); err != nil {
+		return err
+	}
+
+	if err = a.initService(); err != nil {
+		return err
+	}
+
+	if err = a.initRouter(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (a *Application) initRouter() {
-	v1 := a.echo.Group(
-		"v1",
-		middleware.CORS(),
-	)
+func (a *Application) Start() {
+	a.echo.Start(":33669")
+}
+
+func (a *Application) initRouter() error {
+	v1 := a.echo.Group("v1")
 
 	{
 		v1Item := v1.Group("/item")
@@ -44,12 +69,18 @@ func (a *Application) initRouter() {
 		})
 
 	}
+
+	return nil
 }
 
-func (a *Application) initService() {
-
+func (a *Application) initMiddleware() error {
+	return a.m.RegistMiddlware(a.echo)
 }
 
-func (a *Application) initRepository() {
+func (a *Application) initService() error {
+	return nil
+}
 
+func (a *Application) initRepository() error {
+	return nil
 }

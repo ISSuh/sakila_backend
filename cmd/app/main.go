@@ -1,87 +1,32 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"time"
+	"os"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/ISSuh/msago-sample/internal/adapter/log"
+	"github.com/ISSuh/msago-sample/internal/app"
 )
 
-type Actor struct {
-	ActorId    int    `gorm:"primaryKey;type:smallint unsigned"`
-	FirstName  string `gorm:"type:varchar(45)"`
-	LastName   string `gorm:"type:varchar(45)"`
-	LastUpdate time.Time
-}
-
-func (Actor) TableName() string {
-	return "actor"
-}
-
-type Countries struct {
-	CountryId  int      `gorm:"primaryKey;type:smallint unsigned"`
-	Country    string   `gorm:"type:varchar(50)"`
-	City       []Cities `gorm:"foreignKey:CityId"`
-	LastUpdate time.Time
-}
-
-func (Countries) TableName() string {
-	return "country"
-}
-
-type Cities struct {
-	CityId int    `gorm:"primaryKey;type:smallint unsigned"`
-	City   string `gorm:"type:varchar(50)"`
-	// CountryId  incountry_idt
-	Country    Countries `gorm:"foreignKey:CountryId"`
-	LastUpdate time.Time
-}
-
-func (Cities) TableName() string {
-	return "city"
-}
-
-func prettyPrint(i interface{}) string {
-	s, _ := json.MarshalIndent(i, "", " ")
-	return string(s)
-}
-
 func main() {
-	dsn := "root:1@tcp(127.0.0.1:33551)/temp?charset=utf8mb4&parseTime=True&loc=Local"
-	dialector := mysql.Open(dsn)
-	config := gorm.Config{}
-	db, err := gorm.Open(dialector, &config)
-	if err != nil {
-		fmt.Printf("%s", err)
+	l := log.NewLogger()
+
+	args := os.Args[1:]
+	if len(args) < 1 {
+		l.Fatalln("need config file path")
 	}
 
-	db.AutoMigrate(
-		&Actor{},
-		&Cities{},
-	)
+	path := args[0]
+	var application *app.Application
+	var err error
+	if application, err = app.NewApplication(l, path); err != nil {
+		l.WithError(err)
+		return
+	}
 
-	// 	var a Actor
-	// 	db.Where("actor_id=?", 1).Find(&a)
+	if err = application.Init(); err != nil {
+		l.WithError(err)
+		return
+	}
 
-	// 	fmt.Printf("%s\n", prettyPrint(a))
-
-	// 	var country Countries
-	// 	err = db.Model(&Countries{}).Preload("City").Where("country_id=?", 82).Find(&country).Error
-
-	// 	if err != nil {
-	// 		fmt.Printf("%s", err.Error())
-	// 	}
-
-	// 	fmt.Printf("%s\n", prettyPrint(country))
-
-	// 	var cities []Cities
-	// 	err = db.Model(&Cities{}).Preload("Country").Where("country_id=?", 82).Find(&cities).Error
-
-	// 	if err != nil {
-	// 		fmt.Printf("%s", err.Error())
-	// 	}
-
-	// fmt.Printf("%s\n", prettyPrint(cities))
+	application.Start()
 }

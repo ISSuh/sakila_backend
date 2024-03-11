@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/ISSuh/msago-sample/internal/config"
 	"github.com/ISSuh/msago-sample/internal/controller/api/handler"
 	"github.com/ISSuh/msago-sample/internal/controller/api/middleware"
 	"github.com/ISSuh/msago-sample/internal/controller/api/router"
 	"github.com/ISSuh/msago-sample/internal/logger"
+	"github.com/ISSuh/msago-sample/pkg/config"
 	"github.com/labstack/echo/v4"
 )
 

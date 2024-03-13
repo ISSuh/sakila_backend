@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/ISSuh/msago-sample/pkg/logger"
+	"github.com/ISSuh/msago-sample/internal/logger"
 	"go.uber.org/zap"
 )
 

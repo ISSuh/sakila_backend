@@ -1,23 +1,27 @@
 package app
 
 import (
-	"github.com/ISSuh/msago-sample/internal/controller/api/handler"
-	"github.com/ISSuh/msago-sample/internal/controller/api/middleware"
-	"github.com/ISSuh/msago-sample/internal/controller/api/router"
+	"strconv"
+
+	"github.com/ISSuh/msago-sample/internal/controller/rest/middleware"
+	"github.com/ISSuh/msago-sample/internal/controller/rest/router"
+	"github.com/ISSuh/msago-sample/internal/factory"
 	"github.com/ISSuh/msago-sample/internal/logger"
 	"github.com/ISSuh/msago-sample/pkg/config"
+
 	"github.com/labstack/echo/v4"
 )
 
 type Application struct {
-	config config.Config
+	config *config.Config
 	log    logger.Logger
 
-	h handler.Handler
-	m middleware.Middleware
-	r router.Router
+	s *factory.Services
+	r *factory.Repositories
+	h *factory.Handlers
+	m *middleware.Middleware
 
-	echo *echo.Echo
+	e *echo.Echo
 }
 
 func NewApplication(l logger.Logger, configPath string) (*Application, error) {
@@ -29,11 +33,8 @@ func NewApplication(l logger.Logger, configPath string) (*Application, error) {
 	a := &Application{
 		config: config,
 		log:    l,
-		echo:   echo.New(),
+		e:      echo.New(),
 	}
-
-	a.initRouter()
-
 	return a, nil
 }
 
@@ -48,39 +49,69 @@ func (a *Application) Init() error {
 		return err
 	}
 
-	if err = a.initRouter(); err != nil {
+	if err = a.initHandler(); err != nil {
+		return err
+	}
+
+	if err = a.initMiddleware(); err != nil {
+		return err
+	}
+
+	if err = router.Route(a.e, a.m, a.h); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (a *Application) Start() {
-	a.echo.Start(":33669")
+func (a *Application) Start() error {
+	port := strconv.Itoa(a.config.Server.Port)
+	return a.e.Start(":" + port)
 }
 
-func (a *Application) initRouter() error {
-	v1 := a.echo.Group("v1")
+func (a *Application) initRepository() error {
+	a.log.Infof("init repository")
 
-	{
-		v1Item := v1.Group("/item")
-		v1Item.GET(":itemId", func(echoCtx echo.Context) error {
-			return nil
-		})
+	var err error
+	var repositories *factory.Repositories
 
+	if repositories, err = factory.NewRepositories(a.log); err != nil {
+		return err
 	}
 
+	a.r = repositories
+	return nil
+}
+
+func (a *Application) initService() error {
+	a.log.Infof("init service")
+
+	var err error
+	var services *factory.Services
+
+	if services, err = factory.NewServices(a.log, a.r); err != nil {
+		return err
+	}
+
+	a.s = services
+	return nil
+}
+
+func (a *Application) initHandler() error {
+	a.log.Infof("init handler")
+
+	var err error
+	var handlers *factory.Handlers
+
+	if handlers, err = factory.NewHandlers(a.log, a.s); err != nil {
+		return err
+	}
+
+	a.h = handlers
 	return nil
 }
 
 func (a *Application) initMiddleware() error {
-	return a.m.RegistMiddlware(a.echo)
-}
-
-func (a *Application) initService() error {
-	return nil
-}
-
-func (a *Application) initRepository() error {
-	return nil
+	a.log.Infof("init middleware")
+	return a.m.RegistMiddlware(a.e)
 }

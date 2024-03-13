@@ -7,24 +7,27 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Config struct {
+type ServerConfig struct {
+	Port int `yaml:"port"`
 }
 
-func NewConfig(path string) (Config, error) {
+type Config struct {
+	Server ServerConfig `yaml:"server"`
+}
+
+func NewConfig(path string) (*Config, error) {
 	if len(path) == 0 {
-		return Config{}, errors.New("can not found config file")
+		return nil, errors.New("can not found config file")
 	}
 
-	var buffer []byte
-	var err error
-	buffer, err = loadFile(path)
+	buffer, err := loadFile(path)
 	if err != nil {
-		return Config{}, err
+		return nil, err
 	}
 
-	var config Config
+	config := new(Config)
 	if err = yaml.Unmarshal(buffer, config); err != nil {
-		return Config{}, nil
+		return nil, nil
 	}
 	return config, nil
 }

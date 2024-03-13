@@ -18,15 +18,16 @@ func main() {
 	path := args[0]
 	var application *app.Application
 	var err error
+
 	if application, err = app.NewApplication(l, path); err != nil {
-		l.WithError(err)
-		return
+		l.Fatalln(err)
 	}
 
 	if err = application.Init(); err != nil {
-		l.WithError(err)
-		return
+		l.Fatalln(err)
 	}
 
-	application.Start()
+	if err = application.Start(); err != nil {
+		l.Fatalln(err)
+	}
 }

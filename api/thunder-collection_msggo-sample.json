@@ -1,0 +1,53 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "msggo-sample",
+    "dateExported": "2024-03-13T14:08:11.231Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "7352fb54-6c95-4c6e-be1b-3621d7733389",
+            "name": "store",
+            "containerId": "",
+            "created": "2024-03-13T13:33:57.446Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "a2b9e2a3-2c7c-4bdc-8692-7c3bdcf9cd4c",
+            "name": "healthcheck",
+            "containerId": "",
+            "created": "2024-03-13T13:44:34.862Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "b001ce69-4ffc-4c7f-b2ae-491d73f18c01",
+            "colId": "a2af1b82-8a35-4395-b6ef-2cf079aa5110",
+            "containerId": "7352fb54-6c95-4c6e-be1b-3621d7733389",
+            "name": "StoreById",
+            "url": "{{API_SERVER}}/v1/store/1",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-03-13T13:34:15.068Z",
+            "modified": "2024-03-13T14:07:17.590Z",
+            "headers": [],
+            "params": [],
+            "reqType": "get",
+            "tests": []
+        },
+        {
+            "_id": "06e00a31-273d-4ee4-ac52-ee57cef4cd47",
+            "colId": "a2af1b82-8a35-4395-b6ef-2cf079aa5110",
+            "containerId": "a2b9e2a3-2c7c-4bdc-8692-7c3bdcf9cd4c",
+            "name": "healthcheck",
+            "url": "{{API_SERVER}}/v1/healthcheck",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-03-13T13:44:42.564Z",
+            "modified": "2024-03-13T14:07:12.889Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ]
+}

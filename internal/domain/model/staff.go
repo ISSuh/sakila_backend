@@ -7,10 +7,10 @@ type Staff struct {
 
 	FirstName string
 	LastName  string
-	Address   *Address
-	Picture   []byte
-	Email     string
-	Store     Store
+	Address   *Address `gorm:"foreignKey:AddressId"`
+	// Picture   []byte
+	Email string
+	Store *Store `gorm:"foreignKey:StoreId"`
 
 	Active   int
 	Username string

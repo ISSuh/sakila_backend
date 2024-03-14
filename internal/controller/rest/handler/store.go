@@ -23,11 +23,15 @@ func NewStoreHandler(l logger.Logger, s service.StoreService) *Store {
 
 func (s *Store) StoreById() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		s.log.Infof("[StoreById] id : ", c.Param("id"))
+		s.log.Infof("[StoreById] id : %s", c.Param("id"))
 
 		idStr := c.Param("id")
 		id, _ := strconv.Atoi(idStr)
-		model := s.service.StoreById(id)
+		model, err := s.service.StoreById(id)
+		if err != nil {
+			return err
+		}
+
 		s.log.Infof("[StoreById] %+V", model)
 		return c.String(http.StatusOK, idStr)
 	}

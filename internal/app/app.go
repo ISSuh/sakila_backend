@@ -8,6 +8,7 @@ import (
 	"github.com/ISSuh/msago-sample/internal/factory"
 	"github.com/ISSuh/msago-sample/internal/logger"
 	"github.com/ISSuh/msago-sample/pkg/config"
+	"github.com/ISSuh/msago-sample/pkg/db"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,12 +17,13 @@ type Application struct {
 	config *config.Config
 	log    logger.Logger
 
-	s *factory.Services
-	r *factory.Repositories
-	h *factory.Handlers
-	m *middleware.Middleware
+	serice     *factory.Services
+	repository *factory.Repositories
+	handler    *factory.Handlers
+	middelware *middleware.Middleware
 
-	e *echo.Echo
+	echo *echo.Echo
+	db   *db.Database
 }
 
 func NewApplication(l logger.Logger, configPath string) (*Application, error) {
@@ -33,13 +35,18 @@ func NewApplication(l logger.Logger, configPath string) (*Application, error) {
 	a := &Application{
 		config: config,
 		log:    l,
-		e:      echo.New(),
+		echo:   echo.New(),
+		db:     db.NewDatabase(config.Database),
 	}
 	return a, nil
 }
 
 func (a *Application) Init() error {
 	var err error
+
+	if err = a.initInfrastructure(); err != nil {
+		return err
+	}
 
 	if err = a.initRepository(); err != nil {
 		return err
@@ -57,7 +64,7 @@ func (a *Application) Init() error {
 		return err
 	}
 
-	if err = router.Route(a.e, a.m, a.h); err != nil {
+	if err = router.Route(a.echo, a.middelware, a.handler); err != nil {
 		return err
 	}
 
@@ -66,7 +73,18 @@ func (a *Application) Init() error {
 
 func (a *Application) Start() error {
 	port := strconv.Itoa(a.config.Server.Port)
-	return a.e.Start(":" + port)
+	address := ":" + port
+	return a.echo.Start(address)
+}
+
+func (a *Application) initInfrastructure() error {
+	a.log.Infof("init infrastructure")
+
+	var err error
+	if err = a.db.Connect(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (a *Application) initRepository() error {
@@ -75,11 +93,11 @@ func (a *Application) initRepository() error {
 	var err error
 	var repositories *factory.Repositories
 
-	if repositories, err = factory.NewRepositories(a.log); err != nil {
+	if repositories, err = factory.NewRepositories(a.log, a.db); err != nil {
 		return err
 	}
 
-	a.r = repositories
+	a.repository = repositories
 	return nil
 }
 
@@ -89,11 +107,11 @@ func (a *Application) initService() error {
 	var err error
 	var services *factory.Services
 
-	if services, err = factory.NewServices(a.log, a.r); err != nil {
+	if services, err = factory.NewServices(a.log, a.repository); err != nil {
 		return err
 	}
 
-	a.s = services
+	a.serice = services
 	return nil
 }
 
@@ -103,15 +121,15 @@ func (a *Application) initHandler() error {
 	var err error
 	var handlers *factory.Handlers
 
-	if handlers, err = factory.NewHandlers(a.log, a.s); err != nil {
+	if handlers, err = factory.NewHandlers(a.log, a.serice); err != nil {
 		return err
 	}
 
-	a.h = handlers
+	a.handler = handlers
 	return nil
 }
 
 func (a *Application) initMiddleware() error {
 	a.log.Infof("init middleware")
-	return a.m.RegistMiddlware(a.e)
+	return a.middelware.RegistMiddlware(a.echo)
 }

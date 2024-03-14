@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/ISSuh/msago-sample/pkg/db"
 	"gopkg.in/yaml.v3"
 )
 
@@ -12,7 +13,9 @@ type ServerConfig struct {
 }
 
 type Config struct {
-	Server ServerConfig `yaml:"server"`
+	LogLevel string       `yaml:"log"`
+	Server   ServerConfig `yaml:"app"`
+	Database db.Config    `yaml:"db"`
 }
 
 func NewConfig(path string) (*Config, error) {

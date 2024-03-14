@@ -5,8 +5,8 @@ import "time"
 type Store struct {
 	StoreId int `gorm:"primaryKey"`
 
-	ManagerStaff *Staff
-	Address      Address
+	ManagerStaff *Staff   `gorm:"foreignKey:StaffId"`
+	Address      *Address `gorm:"foreignKey:AddressId"`
 
 	LastUpdate time.Time
 }

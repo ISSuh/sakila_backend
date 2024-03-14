@@ -1,3 +1,23 @@
 # 
-server:
+
+
+app:
   port: 33771
+
+db:
+  engine:
+    driver: mysql
+    ip: localhost
+    port: 33551
+    database: sakila
+    id: root
+    password: 1
+
+  orm:
+    loglevel: info
+    connection_pool:
+      idle_connectin: 10
+      open_connection: 20
+
+
+

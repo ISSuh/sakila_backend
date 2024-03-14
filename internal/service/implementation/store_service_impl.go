@@ -12,12 +12,12 @@ type StoreServiceImpl struct {
 	serviceRepository repository.StoreRepository
 }
 
-func NewStoreService(l logger.Logger, sr repository.StoreRepository) service.StoreService {
+func NewStoreService(l logger.Logger, r repository.StoreRepository) service.StoreService {
 	return &StoreServiceImpl{
-		serviceRepository: sr,
+		serviceRepository: r,
 	}
 }
 
-func (s *StoreServiceImpl) StoreById(id int) model.Store {
+func (s *StoreServiceImpl) StoreById(id int) (*model.Store, error) {
 	return s.serviceRepository.StoreById(id)
 }

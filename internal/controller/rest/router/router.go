@@ -28,7 +28,7 @@ func Route(e *echo.Echo, m *mw.Middleware, h *factory.Handlers) error {
 
 	{
 		store := v.Group("/store")
-		store.GET(":id", h.Store.StoreById())
+		store.GET("/:id", h.Store.StoreById())
 	}
 
 	return nil

@@ -1,55 +1,47 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-type Actor struct {
-	ActorId    int    `gorm:"primaryKey;type:smallint unsigned"`
-	FirstName  string `gorm:"type:varchar(45)"`
-	LastName   string `gorm:"type:varchar(45)"`
-	LastUpdate time.Time
+type TestA struct {
+	AId int `gorm:"primaryKey"`
+
+	BFKId int
+	B     *TestB `gorm:"foreignKey:BFKId;references:BId"`
+
+	CFKId int
+	C     *TestC `gorm:"foreignKey:CFFId;references:CId"`
+
+	ValueA int
 }
 
-func (Actor) TableName() string {
-	return "actor"
+type TestB struct {
+	BId    int `gorm:"primaryKey"`
+	ValueB int
 }
 
-type Countries struct {
-	CountryId  int      `gorm:"primaryKey;type:smallint unsigned"`
-	Country    string   `gorm:"type:varchar(50)"`
-	City       []Cities `gorm:"foreignKey:CountryId"`
-	LastUpdate time.Time
+type TestC struct {
+	CId    int `gorm:"primarykey"`
+	DFKId  int
+	D      *TestD `gorm:"foreignkey:DFKId;references:DId"`
+	ValueC int
 }
 
-func (Countries) TableName() string {
-	return "country"
-}
+type TestD struct {
+	DId    int `gorm:"primarykey"`
+	ValueD int
 
-type Cities struct {
-	CityId     int    `gorm:"primaryKey;type:smallint unsigned"`
-	City       string `gorm:"type:varchar(50)"`
-	Country    Countries
-	LastUpdate time.Time
-}
-
-func (Cities) TableName() string {
-	return "city"
-}
-
-func prettyPrint(i interface{}) string {
-	s, _ := json.MarshalIndent(i, "", " ")
-	return string(s)
+	// CFKId int
+	// C     *TestC `gorm:"foreignkey:CFKId;references:CId"`
 }
 
 func main() {
-	dsn := "root:1@tcp(127.0.0.1:33551)/sakila?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:1@tcp(127.0.0.1:33551)/TESTDB?charset=utf8mb4&parseTime=True&loc=Local"
 	dialector := mysql.Open(dsn)
 	config := gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -59,29 +51,31 @@ func main() {
 		fmt.Printf("%s", err)
 	}
 
-	// db.AutoMigrate(
-	// 	&Actor{},
-	// 	&Cities{},
-	// )
+	db.AutoMigrate(
+		&TestA{},
+		&TestB{},
+		&TestC{},
+		&TestD{})
 
-	var a Actor
-	db.Where("actor_id=?", 1).Find(&a)
+	// d := []TestD{}
+	// for i := 0; i < 10; i++ {
+	// 	d = append(d, TestD{ValueD: i})
 
-	fmt.Printf("%s\n", prettyPrint(a))
-
-	var cities []Cities
-	err = db.Preload("Country").Where("country_id=?", 82).Find(&cities).Error
-	if err != nil {
-		fmt.Printf("%s", err.Error())
-	}
-
-	fmt.Printf("%s\n", prettyPrint(cities))
-
-	// var country []Countries
-	// err = db.Preload("City").Limit(3).Where("country_id=?", 82).Limit(3).Find(&country).Error
-	// if err != nil {
-	// 	fmt.Printf("%s", err.Error())
 	// }
-	// fmt.Printf("%s\n", prettyPrint(country))
+	// if err := db.Create(d).Error; err != nil {
+	// 	fmt.Println(err)
+	// }
+
+	// // for i := 0; i < 10; i++ {
+	// c := TestC{
+	// 	D: &TestD{
+	// 		ValueD: 100,
+	// 	},
+	// 	ValueC: 1,
+	// }
+	// if err := db.Create(&c).Error; err != nil {
+	// 	fmt.Println(err)
+	// }
+	// // }
 
 }

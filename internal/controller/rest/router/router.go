@@ -13,7 +13,6 @@ const (
 
 func Route(e *echo.Echo, m *mw.Middleware, h *factory.Handlers) error {
 	v := e.Group(Version)
-
 	{
 		item := v.Group("/item")
 		item.GET(":itemId", func(echoCtx echo.Context) error {

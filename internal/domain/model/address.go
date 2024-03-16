@@ -8,11 +8,12 @@ import "time"
 // }
 
 type Address struct {
-	AddressId  int     `grom:"primaryKey;type:smallint unsigned"`
-	Address    string  `gorm:"type:varchar(50)"`
-	Address2   string  `gorm:"type:varchar(50)"`
-	District   string  `gorm:"type:varchar(20)"`
-	City       *Cities `gorm:"foreignKey:CityId"`
+	AddressId  int    `grom:"primaryKey;type:smallint unsigned"`
+	Address    string `gorm:"type:varchar(50)"`
+	Address2   string `gorm:"type:varchar(50)"`
+	District   string `gorm:"type:varchar(20)"`
+	CityFKId   int
+	City       *Cities `gorm:"foreignKey:CityFKId;references:CityId"`
 	PostalCode string  `gorm:"type:varchar(10)"`
 	Phone      string  `gorm:"type:varchar(20)"`
 	// Location   Location

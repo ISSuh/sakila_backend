@@ -9,13 +9,13 @@ import (
 
 type RequestHeader map[string]string
 
-type Request struct {
+type AppRequest struct {
 	Header gohttp.Header
 	Cookie []*gohttp.Cookie
 	Body   string
 }
 
-func NewRequest(e echo.Context) (*Request, error) {
+func NewAppRequest(e echo.Context) (*AppRequest, error) {
 	h := e.Request().Header
 	c := e.Request().Cookies()
 
@@ -24,7 +24,7 @@ func NewRequest(e echo.Context) (*Request, error) {
 		return nil, err
 	}
 
-	return &Request{
+	return &AppRequest{
 		Header: h,
 		Cookie: c,
 		Body:   string(buffer),

@@ -5,8 +5,10 @@ import "time"
 type Store struct {
 	StoreId int `gorm:"primaryKey"`
 
-	ManagerStaff *Staff   `gorm:"foreignKey:StaffId"`
-	Address      *Address `gorm:"foreignKey:AddressId"`
+	StaffFKId    int
+	ManagerStaff *Staff `gorm:"foreignKey:StaffFKId;references:StaffId"`
+	AddressFKId  int
+	Address      *Address `gorm:"foreignKey:AddressFKId;references:AddressId"`
 
 	LastUpdate time.Time
 }

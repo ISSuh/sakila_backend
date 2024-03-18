@@ -3,9 +3,11 @@ package model
 import "time"
 
 type Countries struct {
-	CountryId  int      `gorm:"primaryKey;type:smallint unsigned"`
-	Country    string   `gorm:"type:varchar(50)"`
-	City       []Cities `gorm:"foreignKey:CityId"`
+	CountryId int    `gorm:"primaryKey;type:smallint unsigned"`
+	Country   string `gorm:"type:varchar(50)"`
+	// CityFKId  int
+	// City      []Cities `gorm:"foreignKey:CityFKId;references:CityId"`
+
 	LastUpdate time.Time
 }
 

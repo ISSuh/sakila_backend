@@ -24,11 +24,12 @@ func (r *StoreRepositoryImpl) StoreById(id int) (*model.Store, error) {
 	e := r.db.Engine()
 
 	store := new(model.Store)
-	err := e.Preload("Address").Preload("ManagerStaff").Where("store_id=?", id).Find(&store).Error
+	err := e.Preload("Address").Where("store_id=?", id).Find(&store).Error
 	if err != nil {
 		return nil, err
 	}
 
-	r.log.Infof("[StoreById]%+v", spew.Sdump(store))
+	// r.log.Infof("[StoreById]%+v", spew.Sdump(store))
+	spew.Dump(store)
 	return store, nil
 }

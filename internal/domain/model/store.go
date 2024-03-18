@@ -3,8 +3,7 @@ package model
 import "time"
 
 type Store struct {
-	StoreId int `gorm:"primaryKey"`
-
+	StoreId      int `gorm:"primaryKey"`
 	StaffFKId    int
 	ManagerStaff *Staff `gorm:"foreignKey:StaffFKId;references:StaffId"`
 	AddressFKId  int

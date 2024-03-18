@@ -3,9 +3,10 @@ package model
 import "time"
 
 type Cities struct {
-	CityId  int `gorm:"primaryKey"`
-	City    string
-	Country *Countries `gorm:"foreignKey:CountryId"`
+	CityId      int `gorm:"primaryKey"`
+	City        string
+	CountryFKId int
+	Country     *Countries `gorm:"foreignKey:CountryFKId;references:CountryId"`
 
 	LastUpdate time.Time
 }

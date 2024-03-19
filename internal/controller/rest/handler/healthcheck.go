@@ -3,9 +3,9 @@ package handler
 import (
 	gohttp "net/http"
 
+	"github.com/ISSuh/msago-sample/internal/common"
 	"github.com/ISSuh/msago-sample/internal/logger"
-	"github.com/ISSuh/msago-sample/pkg/http"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 type Healthcheck struct {
@@ -18,11 +18,11 @@ func NewHealthcheck(l logger.Logger) *Healthcheck {
 	}
 }
 
-func (h *Healthcheck) Check() echo.HandlerFunc {
-	return func(c echo.Context) error {
+func (h *Healthcheck) Check() gin.HandlerFunc {
+	return func(c *gin.Context) {
 		h.log.Infof("[Healthcheck]")
 
-		res := http.NewResponseOK()
-		return c.JSON(gohttp.StatusOK, res)
+		res := common.NewResponseOK()
+		c.JSON(gohttp.StatusOK, res)
 	}
 }

@@ -2,22 +2,18 @@ package model
 
 import "time"
 
-// type Location struct {
-// 	X float32 `json:"x"`
-// 	Y float32 `json:"y"`
-// }
-
 type Address struct {
-	AddressId  int    `grom:"primaryKey;type:smallint unsigned"`
-	Address    string `gorm:"type:varchar(50)"`
-	Address2   string `gorm:"type:varchar(50)"`
-	District   string `gorm:"type:varchar(20)"`
-	CityFKId   int
-	City       *Cities `gorm:"foreignKey:CityFKId;references:CityId"`
-	PostalCode string  `gorm:"type:varchar(10)"`
-	Phone      string  `gorm:"type:varchar(20)"`
-	// Location   Location
-	LastUpdate time.Time
+	AddressId  int     `grom:"primaryKey" json:"address_id,omitempty"`
+	Address    string  `json:"address,omitempty"`
+	Address2   string  `json:"address2,omitempty"`
+	District   string  `json:"district,omitempty"`
+	CityId     int     `json:"-"`
+	City       *Cities `gorm:"foreignKey:CityId;references:CityId" json:"city,omitempty"`
+	PostalCode string  `json:"postal_code,omitempty"`
+	Phone      string  `json:"phone,omitempty"`
+	// Location   Location `json:"location,omitempty"`
+
+	LastUpdate time.Time `json:"-"`
 }
 
 func (Address) TableName() string {

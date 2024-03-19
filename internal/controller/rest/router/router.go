@@ -3,31 +3,33 @@ package router
 import (
 	mw "github.com/ISSuh/msago-sample/internal/controller/rest/middleware"
 	"github.com/ISSuh/msago-sample/internal/factory"
-
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 const (
-	Version = "v1"
+	Version1 = "v1"
 )
 
-func Route(e *echo.Echo, m *mw.Middleware, h *factory.Handlers) error {
-	v := e.Group(Version)
+func Route(e *gin.Engine, h *factory.Handlers) error {
+	e.Use(mw.WrapContext())
+	e.Use(mw.ResponseMiddleware())
+
+	v1 := e.Group(Version1)
 	{
-		item := v.Group("/item")
-		item.GET(":itemId", func(echoCtx echo.Context) error {
-			return nil
+		item := v1.Group("/item")
+		item.GET(":itemId", func(ctx *gin.Context) {
 		})
 	}
 
 	{
-		healthcheck := v.Group("/healthcheck")
+		healthcheck := v1.Group("/healthcheck")
 		healthcheck.GET("", h.Healthcheck.Check())
 	}
 
 	{
-		store := v.Group("/store")
+		store := v1.Group("/store")
 		store.GET("/:id", h.Store.StoreById())
+		store.GET("/:id/address", h.Store.StoreAddressById())
 	}
 
 	return nil

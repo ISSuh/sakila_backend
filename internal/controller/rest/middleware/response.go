@@ -1,27 +1,52 @@
 package middleware
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
-	gohttp "net/http"
+	"net/http"
 
 	"github.com/ISSuh/msago-sample/internal/common"
-	"github.com/ISSuh/msago-sample/pkg/http"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func ResponseMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		fmt.Printf("[ResponseMiddleware]")
-		context := common.ToAppContext(c)
-		r := context.Value(common.ResponseContextKey)
+type ResponseWrapper struct {
+	gin.ResponseWriter
 
-		err := next(c)
+	body *bytes.Buffer
+}
 
-		resp, _ := r.(*http.AppResponse)
-		if err != nil {
-			resp.Status = gohttp.StatusInternalServerError
-			resp.Error = "error!"
+func (w *ResponseWrapper) Write(b []byte) (int, error) {
+	return w.body.Write(b)
+}
+
+func ResponseMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Printf("[ResponseMiddleware] start\n")
+
+		writer := &ResponseWrapper{
+			body:           &bytes.Buffer{},
+			ResponseWriter: c.Writer,
 		}
-		return nil
+
+		c.Writer = writer
+		c.Next()
+
+		bodyStr := writer.body.String()
+		status := c.Writer.Status()
+
+		res := common.NewRespons()
+		res.Status = status
+		res.Message = bodyStr
+		if status != http.StatusOK {
+			res.Error = "Error!!"
+		}
+
+		responseByte, _ := json.Marshal(res)
+		responseStr := string(responseByte)
+		writer.ResponseWriter.WriteString(responseStr)
+		writer.body.Reset()
+
+		fmt.Printf("[ResponseMiddleware] end\n")
 	}
 }

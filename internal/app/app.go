@@ -3,14 +3,13 @@ package app
 import (
 	"strconv"
 
-	"github.com/ISSuh/msago-sample/internal/controller/rest/middleware"
 	"github.com/ISSuh/msago-sample/internal/controller/rest/router"
 	"github.com/ISSuh/msago-sample/internal/factory"
 	"github.com/ISSuh/msago-sample/internal/logger"
 	"github.com/ISSuh/msago-sample/pkg/config"
 	"github.com/ISSuh/msago-sample/pkg/db"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 type Application struct {
@@ -20,10 +19,9 @@ type Application struct {
 	serice     *factory.Services
 	repository *factory.Repositories
 	handler    *factory.Handlers
-	middelware *middleware.Middleware
 
-	echo *echo.Echo
-	db   *db.Database
+	engine *gin.Engine
+	db     *db.Database
 }
 
 func NewApplication(l logger.Logger, configPath string) (*Application, error) {
@@ -35,7 +33,7 @@ func NewApplication(l logger.Logger, configPath string) (*Application, error) {
 	a := &Application{
 		config: config,
 		log:    l,
-		echo:   echo.New(),
+		engine: gin.Default(),
 		db:     db.NewDatabase(config.Database),
 	}
 	return a, nil
@@ -60,11 +58,7 @@ func (a *Application) Init() error {
 		return err
 	}
 
-	if err = a.initMiddleware(); err != nil {
-		return err
-	}
-
-	if err = router.Route(a.echo, a.middelware, a.handler); err != nil {
+	if err = router.Route(a.engine, a.handler); err != nil {
 		return err
 	}
 
@@ -74,7 +68,7 @@ func (a *Application) Init() error {
 func (a *Application) Start() error {
 	port := strconv.Itoa(a.config.Server.Port)
 	address := ":" + port
-	return a.echo.Start(address)
+	return a.engine.Run(address)
 }
 
 func (a *Application) initInfrastructure() error {
@@ -127,9 +121,4 @@ func (a *Application) initHandler() error {
 
 	a.handler = handlers
 	return nil
-}
-
-func (a *Application) initMiddleware() error {
-	a.log.Infof("init middleware")
-	return a.middelware.RegistMiddlware(a.echo)
 }

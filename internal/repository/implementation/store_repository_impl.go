@@ -5,7 +5,6 @@ import (
 	"github.com/ISSuh/msago-sample/internal/logger"
 	"github.com/ISSuh/msago-sample/internal/repository"
 	"github.com/ISSuh/msago-sample/pkg/db"
-	"github.com/davecgh/go-spew/spew"
 )
 
 type StoreRepositoryImpl struct {
@@ -24,12 +23,24 @@ func (r *StoreRepositoryImpl) StoreById(id int) (*model.Store, error) {
 	e := r.db.Engine()
 
 	store := new(model.Store)
-	err := e.Preload("Address").Where("store_id=?", id).Find(&store).Error
-	if err != nil {
+	if err := e.Model(&store).Preload("Address.City.Country").Preload("ManagerStaff").Find(&store, id).Error; err != nil {
 		return nil, err
 	}
-
-	// r.log.Infof("[StoreById]%+v", spew.Sdump(store))
-	spew.Dump(store)
 	return store, nil
+}
+
+func (r *StoreRepositoryImpl) StoreAddressById(id int) (*model.Address, error) {
+	e := r.db.Engine()
+
+	store := new(model.Store)
+	if err := e.Model(&store).Preload("Address.City.Country").Find(&store, id).Error; err != nil {
+		return nil, err
+	}
+	return store.Address, nil
+}
+
+func (r *StoreRepositoryImpl) StoresOnCountry(country *model.Countries) ([]*model.Store, error) {
+	// e := r.db.Engine()
+
+	return nil, nil
 }

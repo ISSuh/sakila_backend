@@ -21,3 +21,14 @@ func NewStoreService(l logger.Logger, r repository.StoreRepository) service.Stor
 func (s *StoreServiceImpl) StoreById(id int) (*model.Store, error) {
 	return s.serviceRepository.StoreById(id)
 }
+
+func (s *StoreServiceImpl) StoreAddressById(id int) (*model.Address, error) {
+	return s.serviceRepository.StoreAddressById(id)
+}
+
+func (s *StoreServiceImpl) StoresOnCountry(countryId int) ([]*model.Store, error) {
+	country := model.Countries{
+		CountryId: countryId,
+	}
+	return s.serviceRepository.StoresOnCountry(&country)
+}

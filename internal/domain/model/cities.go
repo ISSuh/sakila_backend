@@ -3,12 +3,12 @@ package model
 import "time"
 
 type Cities struct {
-	CityId      int `gorm:"primaryKey"`
-	City        string
-	CountryFKId int
-	Country     *Countries `gorm:"foreignKey:CountryFKId;references:CountryId"`
+	CityId    int        `gorm:"primaryKey" json:"city_id"`
+	City      string     `json:"city,omitempty"`
+	CountryId int        `json:"-"`
+	Country   *Countries `gorm:"foreignKey:CountryId;references:CountryId" json:"country,omitempty"`
 
-	LastUpdate time.Time
+	LastUpdate time.Time `json:"-"`
 }
 
 func (Cities) TableName() string {

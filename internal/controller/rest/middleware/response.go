@@ -32,15 +32,19 @@ func ResponseMiddleware() gin.HandlerFunc {
 		c.Writer = writer
 		c.Next()
 
-		bodyStr := writer.body.String()
+		body, _ := c.Get("body")
+
+		// bodyStr := writer.body.String()
 		status := c.Writer.Status()
 
 		res := common.NewRespons()
 		res.Status = status
-		res.Message = bodyStr
+		res.Message = body
 		if status != http.StatusOK {
 			res.Error = "Error!!"
 		}
+
+		fmt.Println(res)
 
 		responseByte, _ := json.Marshal(res)
 		responseStr := string(responseByte)

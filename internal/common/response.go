@@ -4,7 +4,7 @@ import "net/http"
 
 type AppResponse struct {
 	Status  int    `json:"status"`
-	Message string `json:"message,omitempty"`
+	Message any    `json:"message,omitempty"`
 	Error   string `json:"error,omitempty"`
 }
 

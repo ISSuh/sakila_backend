@@ -12,7 +12,7 @@ const (
 
 func Route(e *gin.Engine, h *factory.Handlers) error {
 	e.Use(mw.WrapContext())
-	e.Use(mw.ResponseMiddleware())
+	// e.Use(mw.ResponseMiddleware())
 
 	v1 := e.Group(Version1)
 	{
@@ -30,6 +30,7 @@ func Route(e *gin.Engine, h *factory.Handlers) error {
 		store := v1.Group("/store")
 		store.GET("/:id", h.Store.StoreById())
 		store.GET("/:id/address", h.Store.StoreAddressById())
+		store.GET("/country/:countryId", h.Store.StoreOnCountry())
 	}
 
 	return nil

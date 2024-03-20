@@ -57,14 +57,15 @@ func (s *Store) StoreAddressById() gin.HandlerFunc {
 
 func (s *Store) StoreOnCountry() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		s.log.Infof("[StoreOnCountry] id : %s", c.Param("id"))
+		s.log.Infof("[StoreOnCountry] id : %s", c.Param("countryId"))
 
-		countryIdStr := c.Param("id")
+		countryIdStr := c.Param("countryId")
 		countryId, _ := strconv.Atoi(countryIdStr)
 		stores, err := s.service.StoresOnCountry(countryId)
 		if err != nil {
 			return
 		}
+
 		c.JSON(http.StatusOK, stores)
 	}
 }

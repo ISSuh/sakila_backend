@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,19 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Store struct {
+type StoreHandler struct {
 	log     logger.Logger
 	service service.StoreService
 }
 
-func NewStoreHandler(l logger.Logger, s service.StoreService) *Store {
-	return &Store{
+func NewStoreHandler(l logger.Logger, s service.StoreService) *StoreHandler {
+	return &StoreHandler{
 		log:     l,
 		service: s,
 	}
 }
 
-func (s *Store) StoreById() gin.HandlerFunc {
+func (s *StoreHandler) StoreById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s.log.Infof("[StoreById] id : %s", c.Param("id"))
 
@@ -33,15 +31,11 @@ func (s *Store) StoreById() gin.HandlerFunc {
 		if err != nil {
 			return
 		}
-
-		temp, _ := json.Marshal(store)
-		fmt.Println(string(temp))
-
 		c.JSON(http.StatusOK, store)
 	}
 }
 
-func (s *Store) StoreAddressById() gin.HandlerFunc {
+func (s *StoreHandler) StoreAddressById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s.log.Infof("[StoreAddressById] id : %s", c.Param("id"))
 
@@ -51,11 +45,12 @@ func (s *Store) StoreAddressById() gin.HandlerFunc {
 		if err != nil {
 			return
 		}
+
 		c.JSON(http.StatusOK, store)
 	}
 }
 
-func (s *Store) StoreOnCountry() gin.HandlerFunc {
+func (s *StoreHandler) StoreOnCountry() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s.log.Infof("[StoreOnCountry] id : %s", c.Param("countryId"))
 

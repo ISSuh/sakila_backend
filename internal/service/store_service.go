@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/ISSuh/monolith-sakila/internal/domain/model"
 	"github.com/ISSuh/monolith-sakila/internal/logger"
+	"github.com/ISSuh/monolith-sakila/internal/model"
 	"github.com/ISSuh/monolith-sakila/internal/repository"
 	"github.com/ISSuh/monolith-sakila/pkg/db"
 )

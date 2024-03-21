@@ -6,14 +6,18 @@ import (
 )
 
 type Handlers struct {
-	Store       *handler.Store
-	Healthcheck *handler.Healthcheck
+	Store       *handler.StoreHandler
+	Healthcheck *handler.HealthcheckHandler
+	Staff       *handler.StaffHandler
+	Film        *handler.FilmHandler
 }
 
 func NewHandlers(l logger.Logger, s *Services) (*Handlers, error) {
 	h := &Handlers{
 		Store:       handler.NewStoreHandler(l, s.Store),
 		Healthcheck: handler.NewHealthcheck(l),
+		Staff:       handler.NewStaffHandler(l, s.Staff),
+		Film:        handler.NewFilmHandler(l, s.Film),
 	}
 	return h, nil
 }

@@ -12,6 +12,8 @@ type Repositories struct {
 	Country     repository.CountryRepository
 	City        repository.CityRepository
 	Address     repository.AddressRepository
+	Staff       repository.StaffRepository
+	Film        repository.FilmRepository
 }
 
 func NewRepositories(l logger.Logger, d *db.Database) (*Repositories, error) {
@@ -21,6 +23,8 @@ func NewRepositories(l logger.Logger, d *db.Database) (*Repositories, error) {
 		Country:     repository.NewCountryRepository(l, d),
 		City:        repository.NewCityRepository(l, d),
 		Address:     repository.NewAddressRepository(l, d),
+		Staff:       repository.NewStaffRepository(l, d),
+		Film:        repository.NewFilmRepository(l, d),
 	}
 	return r, nil
 }

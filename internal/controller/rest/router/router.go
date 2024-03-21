@@ -15,11 +15,6 @@ func Route(e *gin.Engine, h *factory.Handlers) error {
 	// e.Use(mw.ResponseMiddleware())
 
 	v1 := e.Group(Version1)
-	{
-		item := v1.Group("/item")
-		item.GET(":itemId", func(ctx *gin.Context) {
-		})
-	}
 
 	{
 		healthcheck := v1.Group("/healthcheck")
@@ -31,6 +26,18 @@ func Route(e *gin.Engine, h *factory.Handlers) error {
 		store.GET("/:id", h.Store.StoreById())
 		store.GET("/:id/address", h.Store.StoreAddressById())
 		store.GET("/country/:countryId", h.Store.StoreOnCountry())
+	}
+
+	{
+		store := v1.Group("/staff")
+		store.GET("", h.Staff.Staffs())
+		store.GET("/:id", h.Staff.StaffById())
+	}
+
+	{
+		store := v1.Group("/film")
+		store.GET("", h.Film.Films())
+		store.GET("/:id", h.Film.FilmById())
 	}
 
 	return nil

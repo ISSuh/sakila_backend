@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/ISSuh/msago-sample/pkg/db/database"
+	"github.com/ISSuh/monolith-sakila/pkg/db/database"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )

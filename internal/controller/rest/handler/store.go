@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ISSuh/msago-sample/internal/logger"
-	"github.com/ISSuh/msago-sample/internal/service"
+	"github.com/ISSuh/monolith-sakila/internal/logger"
+	"github.com/ISSuh/monolith-sakila/internal/service"
 	"github.com/gin-gonic/gin"
 )
 

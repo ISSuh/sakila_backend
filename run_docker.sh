@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose -p msago-sample -f ./docker/docker-compose.yml up -d
+docker-compose -p monolith-sakila-f ./docker/docker-compose.yml up -d

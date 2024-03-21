@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"github.com/ISSuh/msago-sample/internal/logger"
-	"github.com/ISSuh/msago-sample/internal/service"
+	"github.com/ISSuh/monolith-sakila/internal/logger"
+	"github.com/ISSuh/monolith-sakila/internal/service"
 )
 
 type Services struct {

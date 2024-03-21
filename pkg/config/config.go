@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/ISSuh/msago-sample/pkg/db"
+	"github.com/ISSuh/monolith-sakila/pkg/db"
 	"gopkg.in/yaml.v3"
 )
 

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/ISSuh/msago-sample/internal/domain/model"
-	"github.com/ISSuh/msago-sample/internal/logger"
-	"github.com/ISSuh/msago-sample/internal/repository"
-	"github.com/ISSuh/msago-sample/pkg/db"
+	"github.com/ISSuh/monolith-sakila/internal/domain/model"
+	"github.com/ISSuh/monolith-sakila/internal/logger"
+	"github.com/ISSuh/monolith-sakila/internal/repository"
+	"github.com/ISSuh/monolith-sakila/pkg/db"
 )
 
 type StoreService interface {

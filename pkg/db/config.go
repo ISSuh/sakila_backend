@@ -1,6 +1,6 @@
 package db
 
-import "github.com/ISSuh/msago-sample/pkg/db/database"
+import "github.com/ISSuh/monolith-sakila/pkg/db/database"
 
 type ConnectionPoolConfig struct {
 	IdleConnection int `yaml:"idle_connection"`

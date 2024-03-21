@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/msago-sample.iml" filepath="$PROJECT_DIR$/.idea/msago-sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/monolith-sakila.iml"
+        filepath="$PROJECT_DIR$/.idea/monolith-sakila.iml" />
     </modules>
   </component>
 </project>

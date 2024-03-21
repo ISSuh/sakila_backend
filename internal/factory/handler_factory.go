@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"github.com/ISSuh/msago-sample/internal/controller/rest/handler"
-	"github.com/ISSuh/msago-sample/internal/logger"
+	"github.com/ISSuh/monolith-sakila/internal/controller/rest/handler"
+	"github.com/ISSuh/monolith-sakila/internal/logger"
 )
 
 type Handlers struct {

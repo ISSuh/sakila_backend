@@ -1,8 +1,8 @@
 package router
 
 import (
-	mw "github.com/ISSuh/msago-sample/internal/controller/rest/middleware"
-	"github.com/ISSuh/msago-sample/internal/factory"
+	mw "github.com/ISSuh/monolith-sakila/internal/controller/rest/middleware"
+	"github.com/ISSuh/monolith-sakila/internal/factory"
 	"github.com/gin-gonic/gin"
 )
 

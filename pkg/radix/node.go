@@ -1,6 +1,9 @@
 package radix
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Dir struct {
 	Name    string
@@ -17,30 +20,32 @@ type Node struct {
 	children map[string]*Node
 }
 
-func (n *Node) AddChild(targetDir *Dir, depth int, parentPath string) {
-	// skip root npde
-	if depth == 0 {
-		path := n.dir.Path + "/"
-		n.AddChild(targetDir, depth+1, path)
-		return
-	}
-
-	// find target node
+func (n *Node) AddChild(targetDir *Dir, depth int) error {
+	// current node is same to target node
 	if n.dir.DirNode == targetDir.DirNode {
+		if len(n.parent.dir.Path) == 0 {
+			return errors.New("should need parent dir info")
+		}
+
 		n.dir.Name = targetDir.Name
-		n.dir.Path = n.parent.dir.Path + n.dir.Name
+		n.dir.Path = n.parent.dir.Path + "/" + n.dir.Name
 		n.updateChildrenPath()
-		return
+		return nil
 	}
 
 	// get node name on current node from target dir node
+	// ex) node : 1{2AAABBB , depth : 1 => AAA
 	myDirNode := SplitMyDirNode(targetDir.DirNode, depth)
 	if len(myDirNode) < 3 {
-		return
+		return errors.New("invalid myDirNode")
 	}
 
 	// get current dir node from target dir name
+	// ex) node : 1{2AAABBB , depth : 1 => 1{2AAA
 	targetCurrentDirNode := SplitDirNodeByDepth(targetDir.DirNode, depth)
+	if len(targetCurrentDirNode) < 3 {
+		return errors.New("invalid targetCurrentDirNode")
+	}
 
 	// find current dir node on children
 	child, exist := n.children[myDirNode]
@@ -61,18 +66,13 @@ func (n *Node) AddChild(targetDir *Dir, depth int, parentPath string) {
 		child = node
 	}
 
-	path := n.dir.Path
-	if len(n.dir.Path) == 0 {
-		path = parentPath
-	}
-	path += "/"
-
-	child.AddChild(targetDir, depth+1, path)
+	return child.AddChild(targetDir, depth+1)
 }
 
 func (n *Node) updateChildrenPath() {
 	for _, child := range n.children {
 		child.dir.Path = n.dir.Path + "/" + child.dir.Name
+		child.updateChildrenPath()
 	}
 }
 

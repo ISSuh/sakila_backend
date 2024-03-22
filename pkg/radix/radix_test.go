@@ -20,18 +20,21 @@ func TestTree(t *testing.T) {
 
 	dirs := []*Dir{
 		{"CCC", "1{2AAABBBCCC", ""},
-		{"DDD", "1{2AAABBBCCCDDD", ""},
+		{"EEE", "1{2AAABBBCCCEEE", ""},
 		{"AAA", "1{2AAA", ""},
-		// {"BBB", "1{2BBB", ""},
-		// {"CCC", "1{2CCC", ""},
-		{"BBB", "1{2AAABBB", ""},
-		// {"CCC", "1{2AAACCC", ""},
-
-		// {"EEE", "1{2AAABBBCCCEEE", ""},
-		// {"EEE", "1{2AAABBBCCCDDDEEE", ""},
+		{"EEE", "1{2AAABBBCCCDDDEEE", ""},
+		{"BBB", "1{2BBB", ""},
+		{"CCC", "1{2CCC", ""},
+		{"DDD", "1{2AAABBBCCCDDD", ""},
+		{"CCC", "1{2AAACCC", ""},
+		// {"AAA", "1{2AAABBB", ""},
 	}
 
-	tree := MakeTree(rootDir, dirs)
-	tree.Dump()
+	tree, err := MakeTree(rootDir, dirs)
+	if err == nil {
+		tree.Dump()
+	}
+
 	assert.NotNil(t, tree)
+	assert.Nil(t, err)
 }

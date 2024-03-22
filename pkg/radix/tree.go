@@ -25,7 +25,7 @@ func SplitDirNodeByDepth(dirNode string, depth int) string {
 	return dirNode[0:dirNodeLengthOnDepth]
 }
 
-func MakeTree(rootDir *Dir, dirs []*Dir) *Tree {
+func MakeTree(rootDir *Dir, dirs []*Dir) (*Tree, error) {
 	t := &Tree{
 		root: &Node{
 			depth:    0,
@@ -36,14 +36,16 @@ func MakeTree(rootDir *Dir, dirs []*Dir) *Tree {
 	}
 
 	for _, dir := range dirs {
-		t.Add(dir)
+		if err := t.Add(dir); err != nil {
+			return nil, err
+		}
 	}
 
-	return t
+	return t, nil
 }
 
-func (t *Tree) Add(dir *Dir) {
-	t.root.AddChild(dir, 0, "")
+func (t *Tree) Add(dir *Dir) error {
+	return t.root.AddChild(dir, 1)
 }
 
 func (t *Tree) Dump() {

@@ -5,22 +5,16 @@ import (
 	"fmt"
 )
 
-type Dir struct {
-	Name    string
-	DirNode string
-	Path    string
-}
-
-type Node struct {
+type node struct {
 	depth  int
 	myNode string
-	dir    Dir
+	dir    *Dir
 
-	parent   *Node
-	children map[string]*Node
+	parent   *node
+	children map[string]*node
 }
 
-func (n *Node) AddChild(targetDir *Dir, depth int) error {
+func (n *node) addChild(targetDir *Dir, depth int) error {
 	// current node is same to target node
 	if n.dir.DirNode == targetDir.DirNode {
 		if len(n.parent.dir.Path) == 0 {
@@ -35,8 +29,8 @@ func (n *Node) AddChild(targetDir *Dir, depth int) error {
 
 	// get node name on current node from target dir node
 	// ex) node : 1{2AAABBB , depth : 1 => AAA
-	myDirNode := SplitMyDirNode(targetDir.DirNode, depth)
-	if len(myDirNode) < 3 {
+	currentDirNodeOnDepth := SplitMyDirNode(targetDir.DirNode, depth)
+	if len(currentDirNodeOnDepth) < 3 {
 		return errors.New("invalid myDirNode")
 	}
 
@@ -48,35 +42,53 @@ func (n *Node) AddChild(targetDir *Dir, depth int) error {
 	}
 
 	// find current dir node on children
-	child, exist := n.children[myDirNode]
+	child, exist := n.children[currentDirNodeOnDepth]
 	if !exist {
-		node := &Node{
-			depth:  n.depth + 1,
-			myNode: myDirNode,
-			dir: Dir{
+		node := &node{
+			depth:  depth + 1,
+			myNode: currentDirNodeOnDepth,
+			dir: &Dir{
 				Name:    "",
 				DirNode: targetCurrentDirNode,
 				Path:    "",
 			},
 			parent:   n,
-			children: map[string]*Node{},
+			children: map[string]*node{},
 		}
 
-		n.children[myDirNode] = node
+		n.children[currentDirNodeOnDepth] = node
 		child = node
 	}
 
-	return child.AddChild(targetDir, depth+1)
+	return child.addChild(targetDir, depth+1)
 }
 
-func (n *Node) updateChildrenPath() {
+func (n *node) updateChildrenPath() {
 	for _, child := range n.children {
 		child.dir.Path = n.dir.Path + "/" + child.dir.Name
 		child.updateChildrenPath()
 	}
 }
 
-func (n *Node) Dump() {
+func (n *node) findByDirNode(dirNode string, depth int) (*Dir, error) {
+	if n.dir.DirNode == dirNode {
+		return n.dir, nil
+	}
+
+	currentDirNodeOnDepth := SplitMyDirNode(dirNode, depth)
+	if len(currentDirNodeOnDepth) < 3 {
+		return nil, errors.New("invalid myDirNode")
+	}
+
+	// find current dir node on children
+	child, exist := n.children[currentDirNodeOnDepth]
+	if !exist {
+		return nil, errors.New("not exist dir")
+	}
+	return child.findByDirNode(dirNode, depth)
+}
+
+func (n *node) dump() {
 	fmt.Printf("[%d]", n.depth)
 	fmt.Printf("[%s]", n.dir.DirNode)
 	for i := n.depth + 1; i < 30; i = i * DirNodeLength {
@@ -84,6 +96,6 @@ func (n *Node) Dump() {
 	}
 	fmt.Printf("%s\n", n.dir.Path)
 	for _, child := range n.children {
-		child.Dump()
+		child.dump()
 	}
 }

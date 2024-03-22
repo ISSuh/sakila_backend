@@ -6,28 +6,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// {"CCC", "1{2AAABBBCCC", ""},
-// {"EEE", "1{2AAABBBCCCEEE", ""},
-// {"AAA", "1{2AAA", ""},
-// {"EEE", "1{2AAABBBCCCDDDEEE", ""},
-// {"BBB", "1{2BBB", ""},
-// {"CCC", "1{2CCC", ""},
-// {"DDD", "1{2AAABBBCCCDDD", ""},
-// {"CCC", "1{2AAACCC", ""},
-
 func TestTree(t *testing.T) {
 	rootDir := &Dir{"root", "1{2", "root"}
 
 	dirs := []*Dir{
-		{"CCC", "1{2AAABBBCCC", ""},
-		{"EEE", "1{2AAABBBCCCEEE", ""},
 		{"AAA", "1{2AAA", ""},
-		{"EEE", "1{2AAABBBCCCDDDEEE", ""},
 		{"BBB", "1{2BBB", ""},
 		{"CCC", "1{2CCC", ""},
-		{"DDD", "1{2AAABBBCCCDDD", ""},
 		{"CCC", "1{2AAACCC", ""},
-		// {"AAA", "1{2AAABBB", ""},
+		{"BBB", "1{2AAABBB", ""},
+		{"AAA", "1{2CCCAAA", ""},
+		{"CCC", "1{2AAABBBCCC", ""},
+		{"EEE", "1{2AAABBBCCCEEE", ""},
+		{"DDD", "1{2AAABBBCCCDDD", ""},
+		{"EEE", "1{2AAABBBCCCDDDEEE", ""},
 	}
 
 	tree, err := MakeTree(rootDir, dirs)
@@ -35,6 +27,12 @@ func TestTree(t *testing.T) {
 		tree.Dump()
 	}
 
-	assert.NotNil(t, tree)
 	assert.Nil(t, err)
+	assert.NotNil(t, tree)
+
+	dir, err := tree.FindByDirNode("1{2CCC")
+	assert.Nil(t, err)
+	if err != nil {
+		assert.Equal(t, dir.Path, "root/CCC")
+	}
 }

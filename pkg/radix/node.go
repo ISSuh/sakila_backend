@@ -3,7 +3,6 @@ package radix
 import (
 	"errors"
 	"fmt"
-	"sync"
 )
 
 type node struct {
@@ -11,9 +10,8 @@ type node struct {
 	myNode string
 	dir    *Dir
 
-	parent *node
-	// children map[string]*node
-	children sync.Map
+	parent   *node
+	children map[string]*node
 }
 
 func (n *node) addChild(targetDir *Dir, depth int) error {
@@ -44,7 +42,7 @@ func (n *node) addChild(targetDir *Dir, depth int) error {
 	}
 
 	// find current dir node on children
-	v, exist := n.children.Load(currentDirNodeOnDepth)
+	child, exist := n.children[currentDirNodeOnDepth]
 	if !exist {
 		node := &node{
 			depth:  depth + 1,
@@ -57,10 +55,11 @@ func (n *node) addChild(targetDir *Dir, depth int) error {
 			parent: n,
 		}
 
-		n.children.Store(currentDirNodeOnDepth, node)
+		n.children[currentDirNodeOnDepth] = node
+		child = node
+
 	}
 
-	child := v.(*node)
 	return child.addChild(targetDir, depth+1)
 }
 

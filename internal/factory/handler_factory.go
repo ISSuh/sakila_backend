@@ -10,14 +10,16 @@ type Handlers struct {
 	Healthcheck *handler.HealthcheckHandler
 	Staff       *handler.StaffHandler
 	Film        *handler.FilmHandler
+	Actor       *handler.ActorHandler
 }
 
 func NewHandlers(l logger.Logger, s *Services) (*Handlers, error) {
 	h := &Handlers{
-		Store:       handler.NewStoreHandler(l, s.Store),
 		Healthcheck: handler.NewHealthcheck(l),
+		Store:       handler.NewStoreHandler(l, s.Store),
 		Staff:       handler.NewStaffHandler(l, s.Staff),
 		Film:        handler.NewFilmHandler(l, s.Film),
+		Actor:       handler.NewActorHandler(l, s.Actor),
 	}
 	return h, nil
 }

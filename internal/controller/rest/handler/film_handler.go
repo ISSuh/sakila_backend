@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/ISSuh/sakila_backend/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/response"
 	"github.com/ISSuh/sakila_backend/internal/logger"
 	"github.com/ISSuh/sakila_backend/internal/service"
 	"github.com/gin-gonic/gin"
@@ -28,12 +29,19 @@ func (h *FilmHandler) FilmById() gin.HandlerFunc {
 		h.log.Infof("[FilmById] id : %s", c.Param("id"))
 
 		idStr := c.Param("id")
-		id, _ := strconv.Atoi(idStr)
-		store, err := h.film.FilmById(id)
+		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
-		c.JSON(http.StatusOK, store)
+
+		film, err := h.film.FilmById(id)
+		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
+			return
+		}
+
+		response.SendResponseOk(c, film)
 	}
 }
 
@@ -43,19 +51,22 @@ func (h *FilmHandler) Films() gin.HandlerFunc {
 
 		var page common.Pagnation
 		if err := c.Bind(&page); err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
-		fmt.Println(common.Dump(page))
-
 		if !page.IsValidate() {
+			err := errors.New("validate fail about page parameter")
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
 		filmsPages, err := h.film.Films(&page)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 2, err)
 			return
 		}
-		c.JSON(http.StatusOK, filmsPages)
+
+		response.SendResponseOk(c, filmsPages)
 	}
 }

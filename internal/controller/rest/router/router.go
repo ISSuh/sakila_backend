@@ -12,7 +12,7 @@ const (
 
 func Route(e *gin.Engine, h *factory.Handlers) error {
 	e.Use(mw.WrapContext())
-	// e.Use(mw.ResponseMiddleware())
+	e.Use(mw.ResponseMiddleware())
 
 	v1 := e.Group(Version1)
 
@@ -22,20 +22,25 @@ func Route(e *gin.Engine, h *factory.Handlers) error {
 	}
 
 	{
-		store := v1.Group("/store")
+		store := v1.Group("/stores")
 		store.GET("/:id", h.Store.StoreById())
 		store.GET("/:id/address", h.Store.StoreAddressById())
 		store.GET("/country/:countryId", h.Store.StoreOnCountry())
 	}
 
 	{
-		store := v1.Group("/staff")
+		store := v1.Group("/staffs")
 		store.GET("", h.Staff.Staffs())
 		store.GET("/:id", h.Staff.StaffById())
 	}
 
 	{
-		store := v1.Group("/film")
+		store := v1.Group("/actors")
+		store.GET("/:id", h.Actor.ActorById())
+	}
+
+	{
+		store := v1.Group("/films")
 		store.GET("", h.Film.Films())
 		store.GET("/:id", h.Film.FilmById())
 	}

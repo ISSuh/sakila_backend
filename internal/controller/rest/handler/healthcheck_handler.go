@@ -1,9 +1,8 @@
 package handler
 
 import (
-	gohttp "net/http"
+	"net/http"
 
-	"github.com/ISSuh/sakila_backend/internal/common"
 	"github.com/ISSuh/sakila_backend/internal/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +19,6 @@ func NewHealthcheck(l logger.Logger) *HealthcheckHandler {
 
 func (h *HealthcheckHandler) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		h.log.Infof("[Healthcheck]")
-
-		res := common.NewResponseOK()
-		c.JSON(gohttp.StatusOK, res)
+		c.Status(http.StatusNoContent)
 	}
 }

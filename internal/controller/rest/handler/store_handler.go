@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/response"
 	"github.com/ISSuh/sakila_backend/internal/logger"
 	"github.com/ISSuh/sakila_backend/internal/service"
 	"github.com/gin-gonic/gin"
@@ -26,12 +27,19 @@ func (s *StoreHandler) StoreById() gin.HandlerFunc {
 		s.log.Infof("[StoreById] id : %s", c.Param("id"))
 
 		idStr := c.Param("id")
-		id, _ := strconv.Atoi(idStr)
-		store, err := s.service.StoreById(id)
+		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
-		c.JSON(http.StatusOK, store)
+
+		store, err := s.service.StoreById(id)
+		if err != nil {
+			response.SendResponseError(c, http.StatusInternalServerError, 2, err)
+			return
+		}
+
+		response.SendResponseOk(c, store)
 	}
 }
 
@@ -40,13 +48,19 @@ func (s *StoreHandler) StoreAddressById() gin.HandlerFunc {
 		s.log.Infof("[StoreAddressById] id : %s", c.Param("id"))
 
 		idStr := c.Param("id")
-		id, _ := strconv.Atoi(idStr)
-		store, err := s.service.StoreAddressById(id)
+		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, store)
+		store, err := s.service.StoreAddressById(id)
+		if err != nil {
+			response.SendResponseError(c, http.StatusInternalServerError, 2, err)
+			return
+		}
+
+		response.SendResponseOk(c, store)
 	}
 }
 
@@ -55,12 +69,18 @@ func (s *StoreHandler) StoreOnCountry() gin.HandlerFunc {
 		s.log.Infof("[StoreOnCountry] id : %s", c.Param("countryId"))
 
 		countryIdStr := c.Param("countryId")
-		countryId, _ := strconv.Atoi(countryIdStr)
-		stores, err := s.service.StoresOnCountry(countryId)
+		countryId, err := strconv.Atoi(countryIdStr)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, stores)
+		stores, err := s.service.StoresOnCountry(countryId)
+		if err != nil {
+			response.SendResponseError(c, http.StatusInternalServerError, 2, err)
+			return
+		}
+
+		response.SendResponseOk(c, stores)
 	}
 }

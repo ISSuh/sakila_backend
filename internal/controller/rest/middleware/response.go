@@ -3,10 +3,9 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/ISSuh/sakila_backend/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,8 +21,6 @@ func (w *ResponseWrapper) Write(b []byte) (int, error) {
 
 func ResponseMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Printf("[ResponseMiddleware] start\n")
-
 		writer := &ResponseWrapper{
 			body:           &bytes.Buffer{},
 			ResponseWriter: c.Writer,
@@ -32,25 +29,37 @@ func ResponseMiddleware() gin.HandlerFunc {
 		c.Writer = writer
 		c.Next()
 
-		body, _ := c.Get("body")
-
-		// bodyStr := writer.body.String()
 		status := c.Writer.Status()
-
-		res := common.NewRespons()
-		res.Status = status
-		res.Message = body
-		if status != http.StatusOK {
-			res.Error = "Error!!"
+		res := &response.AppResponse{
+			Status: status,
 		}
 
-		fmt.Println(res)
+		if http.StatusOK <= status && status <= http.StatusIMUsed {
+			body, _ := c.Get(response.BodyKey)
+			res.Message = body
+		} else {
+			body, _ := c.Get(response.ErrorMessageKey)
+			res.Error = body
+		}
 
 		responseByte, _ := json.Marshal(res)
-		responseStr := string(responseByte)
-		writer.ResponseWriter.WriteString(responseStr)
+		response := string(responseByte)
+		writer.ResponseWriter.WriteString(response)
 		writer.body.Reset()
-
-		fmt.Printf("[ResponseMiddleware] end\n")
 	}
 }
+
+// func makeResponseMessage(res *common.AppResponse, bodyData []byte) error {
+// 	obj := make(map[string]any)
+// 	if err := json.Unmarshal(bodyData, obj); err != nil {
+// 		return err
+// 	}
+
+// 	body, err := json.Marshal(obj)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	res.Message = body
+// 	return nil
+// }

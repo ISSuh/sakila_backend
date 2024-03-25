@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/ISSuh/sakila_backend/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/response"
 	"github.com/ISSuh/sakila_backend/internal/logger"
 	"github.com/ISSuh/sakila_backend/internal/service"
 	"github.com/gin-gonic/gin"
@@ -27,12 +29,19 @@ func (h *StaffHandler) StaffById() gin.HandlerFunc {
 		h.log.Infof("[StaffById] id : %s", c.Param("id"))
 
 		idStr := c.Param("id")
-		id, _ := strconv.Atoi(idStr)
-		staff, err := h.service.StaffById(id)
+		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
-		c.JSON(http.StatusOK, staff)
+
+		staff, err := h.service.StaffById(id)
+		if err != nil {
+			response.SendResponseError(c, http.StatusInternalServerError, 2, err)
+			return
+		}
+
+		response.SendResponseOk(c, staff)
 	}
 }
 
@@ -42,17 +51,22 @@ func (h *StaffHandler) Staffs() gin.HandlerFunc {
 
 		var page common.Pagnation
 		if err := c.Bind(&page); err != nil {
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
 		if !page.IsValidate() {
+			err := errors.New("validate fail about page parameter")
+			response.SendResponseError(c, http.StatusBadRequest, 500, err)
 			return
 		}
 
 		staff, err := h.service.Staffs(page)
 		if err != nil {
+			response.SendResponseError(c, http.StatusInternalServerError, 2, err)
 			return
 		}
-		c.JSON(http.StatusOK, staff)
+
+		response.SendResponseOk(c, staff)
 	}
 }

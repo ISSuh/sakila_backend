@@ -12,6 +12,7 @@ type Services struct {
 	Address service.AddressService
 	Staff   service.StaffService
 	Film    service.FilmService
+	Actor   service.ActorService
 }
 
 func NewServices(l logger.Logger, r *Repositories) (*Services, error) {
@@ -21,6 +22,7 @@ func NewServices(l logger.Logger, r *Repositories) (*Services, error) {
 	store := service.NewStoreService(l, r.Transaction, r.Store, city, address)
 	staff := service.NewStaffService(l, r.Staff)
 	film := service.NewFilmService(l, r.Transaction, r.Film)
+	actor := service.NewActorService(l, r.Transaction, r.Actor)
 
 	s := &Services{
 		Country: country,
@@ -29,6 +31,7 @@ func NewServices(l logger.Logger, r *Repositories) (*Services, error) {
 		Store:   store,
 		Staff:   staff,
 		Film:    film,
+		Actor:   actor,
 	}
 	return s, nil
 }

@@ -14,6 +14,7 @@ type Repositories struct {
 	Address     repository.AddressRepository
 	Staff       repository.StaffRepository
 	Film        repository.FilmRepository
+	Actor       repository.ActorRepository
 }
 
 func NewRepositories(l logger.Logger, d *db.Database) (*Repositories, error) {
@@ -25,6 +26,7 @@ func NewRepositories(l logger.Logger, d *db.Database) (*Repositories, error) {
 		Address:     repository.NewAddressRepository(l, d),
 		Staff:       repository.NewStaffRepository(l, d),
 		Film:        repository.NewFilmRepository(l, d),
+		Actor:       repository.NewActorRepository(l, d),
 	}
 	return r, nil
 }

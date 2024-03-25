@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ISSuh/monolith-sakila/internal/common"
-	"github.com/ISSuh/monolith-sakila/internal/logger"
-	"github.com/ISSuh/monolith-sakila/internal/service"
+	"github.com/ISSuh/sakila_backend/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/logger"
+	"github.com/ISSuh/sakila_backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
 

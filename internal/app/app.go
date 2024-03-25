@@ -3,11 +3,11 @@ package app
 import (
 	"strconv"
 
-	"github.com/ISSuh/monolith-sakila/internal/controller/rest/router"
-	"github.com/ISSuh/monolith-sakila/internal/factory"
-	"github.com/ISSuh/monolith-sakila/internal/logger"
-	"github.com/ISSuh/monolith-sakila/pkg/config"
-	"github.com/ISSuh/monolith-sakila/pkg/db"
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/router"
+	"github.com/ISSuh/sakila_backend/internal/factory"
+	"github.com/ISSuh/sakila_backend/internal/logger"
+	"github.com/ISSuh/sakila_backend/pkg/config"
+	"github.com/ISSuh/sakila_backend/pkg/db"
 
 	"github.com/gin-gonic/gin"
 )

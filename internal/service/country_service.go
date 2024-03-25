@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/ISSuh/monolith-sakila/internal/logger"
-	"github.com/ISSuh/monolith-sakila/internal/model"
-	"github.com/ISSuh/monolith-sakila/internal/repository"
+	"github.com/ISSuh/sakila_backend/internal/logger"
+	"github.com/ISSuh/sakila_backend/internal/model"
+	"github.com/ISSuh/sakila_backend/internal/repository"
 )
 
 type CountryService interface {

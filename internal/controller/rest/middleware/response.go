@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ISSuh/monolith-sakila/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/common"
 	"github.com/gin-gonic/gin"
 )
 

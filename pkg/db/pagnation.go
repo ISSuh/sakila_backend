@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/ISSuh/monolith-sakila/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/common"
 	"gorm.io/gorm"
 )
 

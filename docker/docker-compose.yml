@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:latest
     restart: always
-    container_name: monolith-sakila-db
+    container_name: sakila_backend-db
     ports:
       - "33551:3306"
     environment:

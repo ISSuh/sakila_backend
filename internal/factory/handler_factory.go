@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"github.com/ISSuh/monolith-sakila/internal/controller/rest/handler"
-	"github.com/ISSuh/monolith-sakila/internal/logger"
+	"github.com/ISSuh/sakila_backend/internal/controller/rest/handler"
+	"github.com/ISSuh/sakila_backend/internal/logger"
 )
 
 type Handlers struct {

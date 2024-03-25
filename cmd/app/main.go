@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/ISSuh/monolith-sakila/internal/app"
-	"github.com/ISSuh/monolith-sakila/pkg/adapter/log"
+	"github.com/ISSuh/sakila_backend/internal/app"
+	"github.com/ISSuh/sakila_backend/pkg/adapter/log"
 )
 
 func main() {

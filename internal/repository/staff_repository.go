@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"github.com/ISSuh/monolith-sakila/internal/common"
-	"github.com/ISSuh/monolith-sakila/internal/logger"
-	"github.com/ISSuh/monolith-sakila/internal/model"
-	"github.com/ISSuh/monolith-sakila/pkg/db"
+	"github.com/ISSuh/sakila_backend/internal/common"
+	"github.com/ISSuh/sakila_backend/internal/logger"
+	"github.com/ISSuh/sakila_backend/internal/model"
+	"github.com/ISSuh/sakila_backend/pkg/db"
 )
 
 type StaffRepository interface {

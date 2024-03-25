@@ -1,4 +1,4 @@
-# monolith-sakila
+# sakila_backend
 
 implement monolith video rental management service for video shop using mysql sakila database
 

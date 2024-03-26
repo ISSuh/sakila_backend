@@ -21,6 +21,7 @@ type Film struct {
 	ReplacementCost    decimal.Decimal `json:"replacement_cost"`
 	Rating             FilmRating      `json:"rating,omitempty"`
 	SpecialFeatures    SpecialFeatures `json:"special_features,omitempty"`
+	Actors             []*Actor        `gorm:"many2many:film_actor;joinForeignKey:film_id;" json:"actors,omitempty"`
 
 	LastUpdate time.Time `json:"-"`
 }

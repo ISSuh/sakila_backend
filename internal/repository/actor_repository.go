@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/ISSuh/sakila_backend/internal/logger"
 	"github.com/ISSuh/sakila_backend/internal/model"
 	"github.com/ISSuh/sakila_backend/pkg/db"
@@ -10,6 +8,8 @@ import (
 
 type ActorRepository interface {
 	ActorById(actorId int) (*model.Actor, error)
+	ActorWithFilmById(actorId int) (*model.Actor, error)
+	ActorByLastName(lastName string) ([]*model.Actor, error)
 }
 
 type actorRepository struct {
@@ -28,17 +28,47 @@ func (r *actorRepository) ActorById(actorId int) (*model.Actor, error) {
 	e := r.db.Engine()
 
 	actor := new(model.Actor)
-	err := e.Set("gorm:auto_preload", true).
-		Joins("JOIN film_actor on film_actor.actor_id=actor.actor_id").
-		Joins("JOIN film on film.film_id=film_actor.film_id").
-		Where("actor.actor_id=?", actorId).
-		Preload("Films").
-		Find(&actor).Error
-	if err != nil {
+	if err := e.
+		Model(actor).
+		Where("actor_id=?", actorId).
+		Find(actor).Error; err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("[TEST] %v\n", *actor)
+	return actor, nil
+}
+
+func (r *actorRepository) ActorWithFilmById(actorId int) (*model.Actor, error) {
+	e := r.db.Engine()
+
+	actor := new(model.Actor)
+	if err := e.
+		Model(actor).
+		Preload("FilmsActor.Film").
+		Where("actor.actor_id=?", actorId).
+		Find(actor).Error; err != nil {
+		return nil, err
+	}
+
+	films := []*model.Film{}
+	for _, filmActor := range actor.FilmsActor {
+		films = append(films, filmActor.Film...)
+	}
+
+	actor.Films = films
+	return actor, nil
+}
+
+func (r *actorRepository) ActorByLastName(lastName string) ([]*model.Actor, error) {
+	e := r.db.Engine()
+
+	actor := []*model.Actor{}
+	if err := e.
+		Model(&actor).
+		Where("last_name=?", lastName).
+		Find(&actor).Error; err != nil {
+		return nil, err
+	}
 
 	return actor, nil
 }

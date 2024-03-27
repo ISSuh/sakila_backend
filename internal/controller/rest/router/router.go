@@ -37,6 +37,8 @@ func Route(e *gin.Engine, h *factory.Handlers) error {
 	{
 		store := v1.Group("/actors")
 		store.GET("/:id", h.Actor.ActorById())
+		store.GET("/:id/films", h.Actor.FilmOnActorById())
+		store.GET("/lastname/:lastName", h.Actor.ActorByLastName())
 	}
 
 	{

@@ -27,8 +27,10 @@ func ResponseMiddleware() gin.HandlerFunc {
 		}
 
 		c.Writer = writer
+
 		c.Next()
 
+		c.Writer.Header().Set("Content-Type", "application/json")
 		status := c.Writer.Status()
 		res := &response.AppResponse{
 			Status: status,
@@ -48,18 +50,3 @@ func ResponseMiddleware() gin.HandlerFunc {
 		writer.body.Reset()
 	}
 }
-
-// func makeResponseMessage(res *common.AppResponse, bodyData []byte) error {
-// 	obj := make(map[string]any)
-// 	if err := json.Unmarshal(bodyData, obj); err != nil {
-// 		return err
-// 	}
-
-// 	body, err := json.Marshal(obj)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	res.Message = body
-// 	return nil
-// }
